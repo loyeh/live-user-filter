@@ -1,5 +1,14 @@
 const container = document.querySelector(".bottom");
 const users = [];
+class newUser {
+  constructor(first, last, state, country, picture) {
+    this.first = first;
+    this.last = last;
+    this.state = state;
+    this.country = country;
+    this.picture = picture;
+  }
+}
 
 async function randomUser() {
   const response = await fetch(
@@ -14,7 +23,13 @@ async function randomUser() {
   const userName = user.results[0].name;
   const userLocation = user.results[0].location;
   // const userName=user.results[0].name;
-
+  const userInfo = new newUser(
+    userName.first,
+    userName.last,
+    userLocation.state,
+    userLocation.country,
+    user.results[0].picture.medium
+  );
   const div = document.createElement("div");
   div.className = "user";
   const image = document.createElement("div");
@@ -28,9 +43,9 @@ async function randomUser() {
   div.appendChild(image);
   div.appendChild(info);
   container.appendChild(div);
-  users.push(div);
+  users.push(userInfo);
 }
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 20; i++) {
   randomUser();
 }
 console.log(users);
