@@ -1,40 +1,16 @@
 const container = document.querySelector(".bottom");
-const users = [];
-class newUser {
-  constructor(first, last, state, country, picture) {
-    this.first = first;
-    this.last = last;
-    this.state = state;
-    this.country = country;
-    this.picture = picture;
-  }
-}
+const search = document.getElementById("search");
 
-async function randomUser() {
-  const response = await fetch(
-    `https://randomuser.me/api/?inc=name,picture,location`
-  );
-  const user = await response.json();
-  console.log(
-    user.results[0].name,
-    user.results[0].location,
-    user.results[0].picture.medium
-  );
-  const userName = user.results[0].name;
-  const userLocation = user.results[0].location;
-  // const userName=user.results[0].name;
-  const userInfo = new newUser(
-    userName.first,
-    userName.last,
-    userLocation.state,
-    userLocation.country,
-    user.results[0].picture.medium
-  );
+let users = [];
+
+function userElem(user) {
+  const userName = user.name;
+  const userLocation = user.location;
   const div = document.createElement("div");
   div.className = "user";
   const image = document.createElement("div");
   image.className = "image";
-  image.style.backgroundImage = `url(${user.results[0].picture.medium})`;
+  image.style.backgroundImage = `url(${user.picture.medium})`;
   const info = document.createElement("div");
   info.className = "info";
   info.innerHTML = `
@@ -43,9 +19,47 @@ async function randomUser() {
   div.appendChild(image);
   div.appendChild(info);
   container.appendChild(div);
-  users.push(userInfo);
 }
-for (let i = 0; i < 20; i++) {
-  randomUser();
+
+function searchUser(user, text) {
+  console.log(user.name.first.toLowerCase().search(text));
+  if (
+    user.name.first.toLowerCase().search(text) != -1 ||
+    user.name.last.toLowerCase().search(text) != -1 ||
+    user.location.state.toLowerCase().search(text) != -1 ||
+    user.location.country.toLowerCase().search(text) != -1
+  ) {
+    userElem(user);
+  }
 }
-console.log(users);
+
+async function randomUser() {
+  const response = await fetch(
+    `https://randomuser.me/api/?results=200&?seed=foobars`
+  );
+  const userObj = await response.json();
+  console.log(
+    userObj,
+    userObj.results[0].location
+    // user.results[0].picture.medium
+  );
+  users = userObj.results;
+  console.log(users);
+  // for (i=0;i=)
+  users.forEach((user) => {
+    userElem(user);
+  });
+
+  search.addEventListener("keyup", () => {
+    container.innerHTML = "";
+    const text = search.value.toLowerCase();
+    console.log(text);
+    users.forEach((user) => {
+      searchUser(user, text);
+    });
+  });
+}
+// for (let i = 0; i < 20; i++) {
+//   randomUser();
+// }
+randomUser();
