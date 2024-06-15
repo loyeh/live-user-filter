@@ -2,6 +2,8 @@ const container = document.querySelector(".bottom");
 const search = document.getElementById("search");
 
 let users = [];
+let use = [];
+let isRecieved = false;
 
 function userElem(user) {
   const userName = user.name;
@@ -22,7 +24,6 @@ function userElem(user) {
 }
 
 function searchUser(user, text) {
-  console.log(user.name.first.toLowerCase().search(text));
   if (
     user.name.first.toLowerCase().search(text) != -1 ||
     user.name.last.toLowerCase().search(text) != -1 ||
@@ -38,14 +39,9 @@ async function randomUser() {
     `https://randomuser.me/api/?results=200&?seed=foobars`
   );
   const userObj = await response.json();
-  console.log(
-    userObj,
-    userObj.results[0].location
-    // user.results[0].picture.medium
-  );
+  use.push(userObj);
   users = userObj.results;
-  console.log(users);
-  // for (i=0;i=)
+  isRecieved = true;
   users.forEach((user) => {
     userElem(user);
   });
@@ -53,13 +49,10 @@ async function randomUser() {
   search.addEventListener("keyup", () => {
     container.innerHTML = "";
     const text = search.value.toLowerCase();
-    console.log(text);
     users.forEach((user) => {
       searchUser(user, text);
     });
   });
 }
-// for (let i = 0; i < 20; i++) {
-//   randomUser();
-// }
+
 randomUser();
